@@ -1,0 +1,70 @@
+ 
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+model User{
+  id String @id @default(uuid())
+  email String @unique
+  name String?
+  pictureUrl String? 
+  resumeUrl String?
+  isRecuiter Boolean @default(false)
+  recruiter Recruiter?
+  jobApplications JobApplication[]
+  createdAt DateTime @default(now())
+}
+
+model Recruiter{
+    id String @id @default(uuid())
+    userId String @unique
+    organizationName String 
+    jobs Job[] 
+createdAt DateTime @default(now())
+
+    user User @relation(fields: [userId],references: [id])
+}
+
+model Job{
+  id String @id @default(uuid())
+  recruiterId String
+  salaryMin Int?
+  salaryMax Int?
+  title String
+//  isFeatured Boolean will add later
+  description String
+  city String
+  location Location 
+  applications JobApplication[] 
+  recruiter Recruiter @relation(fields: [recruiterId],references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+}
+
+model JobApplication{
+  id String @id @default(uuid())
+  jobId String
+  applicantId String
+  resumeUrl String 
+  applicant User @relation(fields: [applicantId],references: [id])
+  createdAt DateTime @default(now())
+  job Job @relation(fields: [jobId],references: [id])
+  @@unique([jobId,applicantId])
+}
+
+enum Location {
+  REMOTE
+  ONSITE
+  HYBRID
+}
+
+

@@ -1,28 +1,40 @@
 import { Request, Response, NextFunction } from "express"
-import { OAuth2Client } from "google-auth-library"
-export const authenticatedReq = async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.body.token
-    if (!token) {
-        res.status(403).send({ error: "Missing token" })
-        return
+import { verifyJWT } from "./verifyJwt"
+import { JwtPayload } from "jsonwebtoken"
+
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: {
+                id: string
+                email: string
+            }
+        }
     }
-    const client = new OAuth2Client(process.env.CLIENT_ID_GOOGLE);
-    try {
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-        });
-        const payload = ticket.getPayload();
-        console.log('Google ID Token Payload:');
-        next()
-    } catch (error) {
-        console.error('Error verifying Google ID token:', error);
-        res.status(500).send({ error: "Error verifying Google Token" })
-    }
+
 }
 
+export const authenticatedReq = async (req: Request, res: Response, next: NextFunction) => {
+    const auth = req.headers["authorization"]
 
-
-
-const signJWT = (token: string) => {
-
+    if (!auth?.startsWith("Bearer ")) {
+        return res.status(401).send({ error: "Missing token header." })
+    }
+    const token = auth.split(" ")[1]
+    try {
+        const decoded = verifyJWT(token)
+        console.log(decoded)
+        if (!decoded) {
+            throw new Error("Jwt verification error")
+        }
+        const { userId, email } = decoded
+        req.user = {
+            id: userId,
+            email
+        }
+        next()
+    } catch (err) {
+        return res.status(401).send({ error: "JWT verification failed", err })
+    }
 }
