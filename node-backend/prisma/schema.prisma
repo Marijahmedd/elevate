@@ -25,7 +25,7 @@ model User{
 
 model Recruiter{
     id String @id @default(uuid())
-    userId String @unique
+    userId String @unique 
     organizationName String 
     jobs Job[] 
 createdAt DateTime @default(now())
@@ -39,6 +39,7 @@ model Job{
   salaryMin Int?
   salaryMax Int?
   title String
+  jobType JobType
 //  isFeatured Boolean will add later
   description String
   city String
@@ -57,6 +58,8 @@ model JobApplication{
   resumeUrl String 
   applicant User @relation(fields: [applicantId],references: [id])
   createdAt DateTime @default(now())
+  status STATUS @default(PENDING_REVIEW)
+  ai_score Int?
   job Job @relation(fields: [jobId],references: [id])
   @@unique([jobId,applicantId])
 }
@@ -66,5 +69,22 @@ enum Location {
   ONSITE
   HYBRID
 }
+
+
+enum STATUS {
+  PENDING_REVIEW
+  SHORTLISTED
+  REJECTED
+  ACCEPTED
+}
+
+
+enum JobType {
+  INTERNSHIP
+  FULL_TIME
+  PART_TIME
+}
+
+
 
 
