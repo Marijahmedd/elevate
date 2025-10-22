@@ -2,9 +2,10 @@ import { Router } from "express"
 import { authenticatedReq } from "../lib/auth-middleware"
 import { GoogleLogin } from "../controllers/auth.controller"
 import { applyForJob, generatePresignedUrlResume, registerAsRecruiter, updateResume } from "../controllers/user.controller"
-import { getJobDetails, getPostedJobs, postJob } from "../controllers/recruiter.controller"
+import { getJobDetails, getPostedJobs, postJob, updateApplicationStatus } from "../controllers/recruiter.controller"
 import { recruiterRequest } from "../lib/recruiter-middleware"
 import { getPublicJobDetails, getPublicJobs } from "../controllers/public.controller"
+import { updateAiScore } from "../controllers/webhook"
 
 export const router = Router()
 
@@ -25,9 +26,13 @@ router.post("/applications", authenticatedReq, applyForJob)
 router.get("/recruiter/jobs", authenticatedReq, recruiterRequest, getPostedJobs)
 router.post("/recruiter/jobs", authenticatedReq, recruiterRequest, postJob)
 router.get("/recruiter/jobs/:id", authenticatedReq, recruiterRequest, getJobDetails)
+router.post("/recruiter/applications/status", authenticatedReq, recruiterRequest, updateApplicationStatus)
 
 
 
+
+//Protected
+router.patch("/webhook/applications", updateAiScore)
 
 router.post("/protected", authenticatedReq, (req, res) => {
 

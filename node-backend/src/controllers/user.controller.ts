@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { z } from "zod"
 import { prisma } from "../lib/prisma"
 import { generatePresignedUrl } from "../lib/presigned-url"
-import { error } from "console"
+import { invokeLambda } from "../lib/aws"
 
 
 //register as recruiter
@@ -93,7 +93,7 @@ export const applyForJob = async (req: Request, res: Response) => {
     if (!req.user?.id) {
         return res.status(401).json({ success: false, error: "User must be logged in" })
     }
-    const jobId = req.body.id
+    const jobId = req.body.jobId
     if (!jobId) return res.status(400).json({ success: false, error: "invalid Input" })
 
     try {
@@ -113,6 +113,9 @@ export const applyForJob = async (req: Request, res: Response) => {
                 id: jobId
             },
             select: {
+                city: true,
+                description: true,
+                title: true,
                 recruiter: {
                     select: {
                         userId: true
@@ -125,15 +128,22 @@ export const applyForJob = async (req: Request, res: Response) => {
         if (jobData?.recruiter.userId === req.user.id) {
             return res.status(403).json({ success: false, error: "Cannot appply for this job!" })
         }
-        await prisma.jobApplication.create({
+        const applicationData = await prisma.jobApplication.create({
             data: {
                 resumeUrl: userData.resumeUrl,
                 applicantId: req.user.id,
                 jobId: jobId,
             }
-            //PUBLISH EVENT THAT APPLIED FOR THIS APPLICATION
         })
 
+
+        const jobInfoForLambda = `title:${jobData.title} description: ${jobData.description} + city: ${jobData.city}`
+
+        invokeLambda({
+            applicationId: applicationData.id,
+            resumeUrl: userData.resumeUrl,
+            jobDescription: jobInfoForLambda
+        })
         return res.status(201).json({ success: true, message: "You have applied for this job." })
     } catch (err) {
         if ((err as any).code === "P2002")
@@ -144,3 +154,4 @@ export const applyForJob = async (req: Request, res: Response) => {
     }
 
 }
+

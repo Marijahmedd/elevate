@@ -1,6 +1,7 @@
 import express from "express"
 import dotenv from "dotenv"
 import { router } from "./routes/router"
+import "./lib/aws"
 dotenv.config()
 const app = express()
 app.use(express.json())

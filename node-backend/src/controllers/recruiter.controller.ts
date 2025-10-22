@@ -1,8 +1,8 @@
 import { Request, Response } from "express"
 import { z } from "zod"
 import { prisma } from "../lib/prisma"
-import { cities, lowerCaseCities } from "../data/cities"
-import { jobTypeEnum, locationEnum } from "../data/constants"
+import { lowerCaseCities } from "../data/cities"
+import { ApplicationStatusEnum, jobTypeEnum, locationEnum } from "../data/constants"
 export const postJob = async (req: Request, res: Response) => {
     if (!req.user?.id) {
         return res.status(401).json({ success: false, error: "User must be logged in" })
@@ -72,6 +72,7 @@ export const postJob = async (req: Request, res: Response) => {
 
     }
 }
+
 
 export const getPostedJobs = async (req: Request, res: Response) => {
     if (!req.user?.id) {
@@ -162,6 +163,54 @@ export const getJobDetails = async (req: Request, res: Response) => {
 
 }
 
+
+export const updateApplicationStatus = async (req: Request, res: Response) => {
+    if (!req.user?.id) {
+        return res.status(401).json({ success: false, error: "User must be logged in" })
+    }
+    if (!req.user.recruiterId) {
+        return res.status(403).json({ success: false, error: "User is not registered as a recruiter!" })
+    }
+
+    const applicationStatusSchema = z.object({
+        applicationId: z.string().min(30).max(40),
+        status: z.enum(ApplicationStatusEnum),
+    })
+
+    const { applicationId, status } = req.body
+
+    if (!applicationId && typeof status !== "string") {
+        return res.status(400).json({ success: false, error: "Invalid input" })
+    }
+
+    const upperStatus = status.toUpperCase()
+
+    const parsedData = applicationStatusSchema.safeParse({ applicationId: applicationId, status: upperStatus })
+    if (!parsedData.success) {
+        return res.status(400).json({ success: false, error: "Invalid input" })
+    }
+    try {
+        const updateStatus = await prisma.jobApplication.updateMany({
+            where: {
+                id: parsedData.data.applicationId,
+                job: {
+                    recruiterId: req.user.recruiterId
+                }
+            },
+            data: {
+                status: parsedData.data.status
+            }
+        })
+        if (updateStatus.count === 0) {
+            return res.status(404).json({ success: false, message: "No such application found!" })
+
+        }
+        console.log(updateStatus)
+        return res.status(200).json({ success: true, message: "Successfully updated status!" })
+    } catch (err) {
+        return res.status(500).json({ success: false, message: "Internal Server Error" })
+    }
+}
 
 
 
