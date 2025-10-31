@@ -3,7 +3,7 @@ import { user } from "../lib/constants"
 
 const ProtectedRoute = () => {
 
-    return user ? <Outlet /> : <Navigate to="/login" />
+    return user ? <Outlet /> : <Navigate to="/jobs" />
 
 }
 

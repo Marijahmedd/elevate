@@ -1,79 +1,71 @@
-import { useState } from "react"
-import { useMutation } from "@tanstack/react-query"
+import UploadResumeModal from "@/components/UploadResumeModal"
 import { useStore } from "@/store/useStore"
-import { api } from "@/lib/axios"
-import { FileUpload } from "@/components/ui/file-upload" // from aceternity UI
-import { toast } from "react-hot-toast"
-
+import { User } from "lucide-react"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { keyToS3Url } from "@/lib/utility"
 
 export default function Profile() {
     const user = useStore((state) => state.user)
-    const [isUploading, setIsUploading] = useState(false)
+    const [isUploadModalOpen, setUploadModalOpen] = useState(false)
 
-    const updateResumeMutation = useMutation({
-        mutationFn: async (file: File) => {
-            setIsUploading(true)
-
-            // 1. Get presigned URL and key
-            const { data } = await api.get("/presigned-url")
-            const { presignedUrl, key } = data
-            console.log(data, 'presigned url data')
-            // 2. Upload directly to S3
-            await fetch(presignedUrl, {
-                method: "PUT",
-                body: file,
-                headers: { "Content-Type": file.type },
-            })
-
-            // 3. Update backend record
-            await api.post("/users/resume", { resumeUrl: key })
-
-            setIsUploading(false)
-            return key
-        },
-        onSuccess: () => {
-            toast.success("Resume uploaded successfully.")
-        },
-        onError: () => {
-            setIsUploading(false)
-            toast.error("Failed to upload resume.")
-        },
-    })
-
-    const handleFileSelect = (files: File[]) => {
-        if (!files.length) return
-        const file = files[0]
-        updateResumeMutation.mutate(file)
-    }
+    if (!user)
+        return (
+            <div className="flex min-h-screen items-center justify-center text-muted-foreground">
+                <h1>Unable to fetch profile</h1>
+            </div>
+        )
 
     return (
-        <div className="p-4 rounded-xl border bg-card flex flex-col gap-4">
-            <h2 className="text-lg font-medium">Resume</h2>
+        <div className="flex h-[500px] flex-col items-center justify-center bg-background text-foreground p-6 overflow-hidden">
+            <UploadResumeModal open={isUploadModalOpen} onOpenChange={setUploadModalOpen} />
 
-            {user?.resumeUrl ? (
-                <div className="flex items-center justify-between">
-                    <a
-                        href={user.resumeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-primary hover:underline break-all"
-                    >
-                        {user.resumeUrl}
-                    </a>
-                    <FileUpload
-                        onChange={handleFileSelect}
-                    // disabled={isUploading}
-                    // className="ml-4"
-                    // buttonText={isUploading ? "Uploading..." : "Upload New"}
-                    />
+            <div className="w-full max-w-md space-y-8 rounded-2xl border border-border bg-card p-8 shadow-sm">
+                <div className="flex flex-col items-center space-y-4">
+                    {user.pictureUrl ? (
+                        <img
+                            src={user.pictureUrl}
+                            alt={user.name ? user.name : "User"}
+                            className="h-20 w-20 rounded-full object-cover"
+                        />
+                    ) : (
+                        <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted">
+                            <User className="h-10 w-10 text-muted-foreground" />
+                        </div>
+                    )}
+
+                    <div className="text-center">
+                        <h1 className="text-xl font-semibold">{user.name}</h1>
+                        <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
                 </div>
-            ) : (
-                <FileUpload
-                    onChange={handleFileSelect}
-                // disabled={isUploading}
-                // buttonText={isUploading ? "Uploading..." : "Upload Resume"}
-                />
-            )}
+
+                <div className="mt-6 flex flex-col space-y-3">
+                    {user.resumeUrl ? (
+                        <>
+                            <Button
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => user.resumeUrl && window.open(keyToS3Url(user.resumeUrl), "_blank")}                            >
+                                View Resume
+                            </Button>
+                            <Button
+                                className="w-full"
+                                onClick={() => setUploadModalOpen(true)}
+                            >
+                                Upload New Resume
+                            </Button>
+                        </>
+                    ) : (
+                        <Button
+                            className="w-full"
+                            onClick={() => setUploadModalOpen(true)}
+                        >
+                            Upload Resume
+                        </Button>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }

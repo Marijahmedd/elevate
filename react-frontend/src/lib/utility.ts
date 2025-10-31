@@ -12,3 +12,8 @@ export const convertIntoK = (input: number): string => {
     return input.toString()
 
 }
+
+export const keyToS3Url = (key: string) => {
+    const bucketUrl = import.meta.env.VITE_S3_BUCKET_URL
+    return `${bucketUrl}/${key}`
+}

@@ -24,8 +24,12 @@ import { useStore } from '@/store/useStore';
 import { queryClient } from '@/main';
 import toast from 'react-hot-toast';
 import { capitalizeFirst, convertIntoK } from '@/lib/utility';
+import UploadResumeModal from './UploadResumeModal';
+import { useState } from 'react';
 
 const JobDetail = () => {
+    const userData = useStore((state) => state.user)
+    const [isUploadModalOpen, setUploadModalOpen] = useState(false)
     const token = useStore((state) => state.token)
     const [searchParams] = useSearchParams();
     const jobId = searchParams.get('job_id');
@@ -107,6 +111,7 @@ const JobDetail = () => {
 
     return (
         <>
+            <UploadResumeModal open={isUploadModalOpen} onOpenChange={setUploadModalOpen} />
             <div className='px-5 pt-5 pb-0 m-0'>
 
                 <div className="text-2xl font-bold my-2">{jobDetails.title}</div>
@@ -171,7 +176,12 @@ const JobDetail = () => {
                         You have applied for this job
                     </Button>
                 ) : (
-                    <Button className="mb-2" onClick={() => { mutate() }}>
+                    <Button className="mb-2" onClick={() => {
+                        if (!userData?.resumeUrl) {
+                            return setUploadModalOpen(true)
+                        }
+                        mutate()
+                    }}>
                         Apply
                     </Button>
                 )}
