@@ -9,17 +9,17 @@ dotenv.config()
 
 
 const s3 = new S3Client({
-  credentials: {
-  },  region: "us-east-1",
+region: "us-east-1",
 });
 
 export const handler = async (event) => {
-  const { applicationId, userId, jobDescription } = event;
-  const Key = `${userId}.pdf`;
+  const { applicationId, resumeUrl, jobDescription } = event;
+  const Key = `${resumeUrl}.pdf`;
+  console.log(event)
 
   try {
     const res = await s3.send(
-      new GetObjectCommand({ Bucket: "elevate-marij", Key })
+      new GetObjectCommand({ Bucket: "elevate-s3-marij", Key })
     );
 
    // Convert stream to buffer
@@ -41,7 +41,7 @@ const prompt = `rate this resume ${pdfData.text} against this Job Description ${
 
 const result = await model.generateContent(prompt);
 const aiScoreOutput= parseInt(result.response.text())
-console.log( aiScoreOutput);
+console.log("score" , aiScoreOutput);
 
     try {
             const payload = {

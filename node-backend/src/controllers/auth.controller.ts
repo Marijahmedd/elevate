@@ -10,6 +10,7 @@ export const GoogleLogin = async (req: Request, res: Response) => {
         res.status(403).json({ success: false, error: "Missing token" })
         return
     }
+    console.log("req recieved in login api")
     const client = new OAuth2Client(process.env.CLIENT_ID_GOOGLE);
     try {
         const ticket = await client.verifyIdToken({

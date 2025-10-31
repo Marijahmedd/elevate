@@ -14,16 +14,19 @@ type lambdaInput = Record<string, any>
 
 export async function invokeLambda(input: lambdaInput) {
     const params = {
-        FunctionName: "Elevate-userApplied",
+        FunctionName: "Elevate_ai_score",
         Payload: JSON.stringify(input),
         InvocationType: "Event" as InvocationType
     }
     console.log("lambda invoked with this params", params)
     const command = new InvokeCommand(params)
-    const rawResult = await lambda.send(command)
-    console.log(rawResult)
 
-    const result = new TextDecoder('utf-8').decode(rawResult.Payload)
-    console.log(result)
+    try {
+        const rawResult = await lambda.send(command)
 
+        const result = new TextDecoder('utf-8').decode(rawResult.Payload)
+        console.log("Successfully invoked lamda")
+    } catch (error) {
+        console.log("Unable to invoke lambda")
+    }
 }

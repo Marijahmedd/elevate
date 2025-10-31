@@ -1,8 +1,12 @@
 import { Request, Response } from "express"
 import { z } from "zod"
 import { prisma } from "../lib/prisma"
-import { lowerCaseCities } from "../data/cities"
-import { ApplicationStatusEnum, jobTypeEnum, locationEnum } from "../data/constants"
+import { lowerCaseCities } from "../../../shared/cities.js"
+import { ApplicationStatusEnum, jobTypeEnum, locationEnum } from "../../../shared/constants.js"
+
+
+
+
 export const postJob = async (req: Request, res: Response) => {
     if (!req.user?.id) {
         return res.status(401).json({ success: false, error: "User must be logged in" })

@@ -1,7 +1,7 @@
 import { Router } from "express"
 import { authenticatedReq } from "../lib/auth-middleware"
 import { GoogleLogin } from "../controllers/auth.controller"
-import { applyForJob, generatePresignedUrlResume, registerAsRecruiter, updateResume } from "../controllers/user.controller"
+import { applyForJob, generatePresignedUrlResume, isAppliedForJob, registerAsRecruiter, updateResume } from "../controllers/user.controller"
 import { getJobDetails, getPostedJobs, postJob, updateApplicationStatus } from "../controllers/recruiter.controller"
 import { recruiterRequest } from "../lib/recruiter-middleware"
 import { getPublicJobDetails, getPublicJobs } from "../controllers/public.controller"
@@ -20,6 +20,8 @@ router.post("/recruiters", authenticatedReq, registerAsRecruiter)
 router.get("/presigned-url", authenticatedReq, generatePresignedUrlResume)
 router.post("/users/resume", authenticatedReq, updateResume)
 router.post("/applications", authenticatedReq, applyForJob)
+router.get("/jobs/:id/status", authenticatedReq, isAppliedForJob)
+
 
 
 //Protected for recruiters

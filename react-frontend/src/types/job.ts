@@ -1,0 +1,30 @@
+import type { JobType, LocationType } from "@/lib/constants";
+
+export type Job = {
+    id: string;
+    title: string;
+    city: string;
+    jobType: JobType;
+    location: LocationType;
+    salaryMin: number;
+    salaryMax: number;
+    recruiter: {
+        organizationName: string;
+    }
+}
+
+
+export type JobDetails = {
+    location: LocationType;
+    recruiter: {
+        organizationName: string
+    }
+    city: string;
+    id: string;
+    salaryMin: number | null;
+    salaryMax: number | null;
+    title: string;
+    jobType: JobType;
+    description: string;
+    createdAt: string;
+}

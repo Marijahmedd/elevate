@@ -1,6 +1,6 @@
 import { Prisma } from "../generated/prisma"
-import { lowerCaseCities } from "../data/cities"
-import { jobTypeEnum, locationEnum } from "../data/constants"
+import { lowerCaseCities } from "../../../shared/cities.js"
+import { jobTypeEnum, locationEnum } from "../../../shared/constants.js"
 import { Request, Response } from "express"
 import { prisma } from "../lib/prisma"
 
@@ -55,10 +55,15 @@ export const getPublicJobs = async (req: Request, res: Response) => {
                     select: { organizationName: true }
                 }
             },
+            orderBy: {
+                createdAt: "desc"
+            },
             take: pageSize, skip: skip
 
         })
-        return res.status(200).json({ success: true, jobs })
+
+        const count = await prisma.job.count({ where })
+        return res.status(200).json({ success: true, jobs, count })
 
     } catch (error) {
         return res.status(500).json({ success: false, error: "Cannot fetch data." })
@@ -77,6 +82,11 @@ export const getPublicJobDetails = async (req: Request, res: Response) => {
             select: {
                 id: true, city: true,
                 createdAt: true, jobType: true, location: true, salaryMax: true, salaryMin: true, title: true, description: true,
+                recruiter: {
+                    select: {
+                        organizationName: true
+                    }
+                }
             }
         })
         if (!jobDetails) {

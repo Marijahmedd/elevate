@@ -74,14 +74,13 @@ export const generatePresignedUrlResume = async (req: Request, res: Response) =>
             return res.status(401).json({ success: false, error: "User must be logged in" })
         }
 
-        const bucket = "elevate-marij";
+        const bucket = "elevate-s3-marij";
         const key = req.user.id;
         const contentType = "application/pdf"
         const presignedUrl = await generatePresignedUrl(bucket, key, contentType)
         console.log("Presigned PUT URL:", presignedUrl);
-        return res.status(200).json({ success: true, presignedUrl })
+        return res.status(200).json({ success: true, presignedUrl, key: `${key}.pdf` })
     } catch (error) {
-
         return res.status(500).json({ success: false, error: "Internal Server Error" })
 
     }
@@ -139,11 +138,13 @@ export const applyForJob = async (req: Request, res: Response) => {
 
         const jobInfoForLambda = `title:${jobData.title} description: ${jobData.description} + city: ${jobData.city}`
 
+
         invokeLambda({
             applicationId: applicationData.id,
             resumeUrl: userData.resumeUrl,
             jobDescription: jobInfoForLambda
         })
+
         return res.status(201).json({ success: true, message: "You have applied for this job." })
     } catch (err) {
         if ((err as any).code === "P2002")
@@ -155,3 +156,24 @@ export const applyForJob = async (req: Request, res: Response) => {
 
 }
 
+export const isAppliedForJob = async (req: Request, res: Response) => {
+    const jobId = req.params.id
+
+    if (!req.user?.id) {
+        return res.status(401).json({ success: false, error: "User must be logged in" })
+    }
+    try {
+        const status = await prisma.jobApplication.findUnique({
+            where: {
+                jobId_applicantId: {
+                    applicantId: req.user.id,
+                    jobId: jobId
+                }
+            },
+        })
+        return res.status(200).json({ success: true, isApplied: !!status })
+
+    } catch (err) {
+        return res.status(500).json({ success: false, error: "Something went wrong!" })
+    }
+}
