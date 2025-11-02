@@ -3,7 +3,7 @@ import { capitalizeFirst, convertIntoK } from "@/lib/utility"
 import type { Job } from "@/types/job"
 import { Banknote, Briefcase, Clock, MapPin } from "lucide-react"
 const JobCard = ({ job }: { job: Job }) => {
-    const capsuleStyle: string = "flex items-center gap-2 text-white text-sm border-1 px-3 py-1 rounded-lg w-max hover:bg-neutral-700 whitespace-nowrap"
+    const capsuleStyle: string = "flex items-center gap-2 text-white text-sm border-1 px-3 py-1 rounded-lg w-max hover:bg-neutral-700 whitespace-nowrap truncate"
     return (
         <div className="flex flex-col bg-[#212121] w-full my-5 p-5 rounded-lg gap-10 min-h-[150px]">
 

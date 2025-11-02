@@ -37,13 +37,13 @@ const Footer = () => {
             <Brain /> <Link to="/ai-search">AI search</Link>
           </SidebarMenuButton>
         </SidebarMenuItem>
-        <SidebarMenuItem>
+        {user ? <SidebarMenuItem>
           <SidebarMenuButton className="pb-3 pt-3"
             isActive={location.pathname === '/recruiter'}>
             <LayoutDashboard />
             <Link to="/recruiter">Recruiter Dashboard</Link>
           </SidebarMenuButton>
-        </SidebarMenuItem>
+        </SidebarMenuItem> : null}
 
         <Separator className="my-2" />
 

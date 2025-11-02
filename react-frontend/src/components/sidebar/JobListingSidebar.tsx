@@ -19,6 +19,7 @@ import { jobTypeLabels, LocationTypeLabels, type JobType, type LocationType } fr
 import { jobTypeEnum, locationEnum } from "../../../../shared/constants"
 import Footer from "./../sidebar/Footer"
 import { useNavigate } from "react-router-dom";
+import Header from "./Header"
 
 
 
@@ -47,7 +48,7 @@ export function JobListingSidebar() {
     })
 
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async <T extends Record<string, string>>(data: T): Promise<void> => {
         console.log(data, "data")
         const normalizedData = { ...data, jobtype: data.jobtype ? data.jobtype.toLowerCase() : "", location: data.location ? data.location.toLowerCase() : "" }
 
@@ -67,12 +68,7 @@ export function JobListingSidebar() {
 
     return (
         <Sidebar className="border-r bg-sidebar text-sidebar-foreground">
-            <SidebarHeader>
-                <h2 className="text-lg font-semibold px-4 py-2">Dashboard</h2>
-            </SidebarHeader>
-
-            <Separator />
-
+            <Header />
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupLabel className="text-sm mb-4">Filters</SidebarGroupLabel>

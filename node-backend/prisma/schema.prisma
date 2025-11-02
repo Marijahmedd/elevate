@@ -17,7 +17,7 @@ model User{
   name String?
   pictureUrl String? 
   resumeUrl String?
-  isRecuiter Boolean @default(false)
+  // isRecuiter Boolean @default(false)
   recruiter Recruiter?
   jobApplications JobApplication[]
   createdAt DateTime @default(now())

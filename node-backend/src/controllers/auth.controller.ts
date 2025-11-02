@@ -32,7 +32,14 @@ export const GoogleLogin = async (req: Request, res: Response) => {
                 },
                 update: {
                 },
-                create: userData
+                create: userData,
+                include: {
+                    recruiter: {
+                        select: {
+                            organizationName: true
+                        }
+                    }
+                }
             })
 
             const jwtData = { userId: user.id, email: user.email }

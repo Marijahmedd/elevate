@@ -1,7 +1,9 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { user } from "../lib/constants"
+import { useStore } from "@/store/useStore"
+
 
 const ProtectedRoute = () => {
+    const user = useStore(state => state.user)
 
     return user ? <Outlet /> : <Navigate to="/jobs" />
 

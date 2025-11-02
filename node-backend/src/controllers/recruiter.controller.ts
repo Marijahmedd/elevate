@@ -137,6 +137,11 @@ export const getJobDetails = async (req: Request, res: Response) => {
             select: {
                 id: true, city: true,
                 createdAt: true, jobType: true, location: true, salaryMax: true, salaryMin: true, title: true, description: true,
+                recruiter: {
+                    select: {
+                        organizationName: true
+                    }
+                },
                 applications: {
                     select: {
                         id: true,

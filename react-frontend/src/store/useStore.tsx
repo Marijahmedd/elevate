@@ -9,7 +9,11 @@ type User = {
     email: string;
     name: string | null;
     pictureUrl: string | null;
-    isRecuiter: boolean;
+    recruiter: Recruiter | null
+}
+
+type Recruiter = {
+    organizationName: string
 }
 
 
@@ -18,12 +22,13 @@ type Store = {
     user: User | null,
     login: (token: string) => void,
     logout: () => void,
-
-
 }
 
-
 export const useStore = create<Store>()(
+
+
+
+
 
     persist(
 
@@ -35,7 +40,7 @@ export const useStore = create<Store>()(
                 set((state) => ({
                     ...state,
                     user: null,
-                    token: null
+                    token: null,
                 }))
                 queryClient.removeQueries({ queryKey: ['job_application_status'], exact: false });
                 toast.success("Successfully Signed Out!")
@@ -54,7 +59,7 @@ export const useStore = create<Store>()(
                     if (result.status !== 200) {
                         throw new Error("Unable to sign in!")
                     }
-
+                    console.log(result.data, "Whole payload")
                     const userData: User = result.data.user
                     console.log(userData)
                     set((state) => ({
@@ -77,10 +82,6 @@ export const useStore = create<Store>()(
             name: "elevate-storage",
             partialize: (state) => ({ token: state.token, user: state.user })
         }
-
-
-
-
     )
 
 

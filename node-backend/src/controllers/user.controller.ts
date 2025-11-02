@@ -11,8 +11,9 @@ export const registerAsRecruiter = async (req: Request, res: Response) => {
     if (!req.user?.id) {
         return res.status(401).json({ success: false, error: "User must be logged in" })
     }
+
     const bodySchema = z.object({
-        organizationName: z.string().trim().min(1)
+        organizationName: z.string().trim().min(1).max(60)
     })
     const parseResult = bodySchema.safeParse(req.body)
 
@@ -22,13 +23,13 @@ export const registerAsRecruiter = async (req: Request, res: Response) => {
     const { organizationName } = parseResult.data
 
     try {
-        await prisma.recruiter.create({
+        const recruiter = await prisma.recruiter.create({
             data: {
                 organizationName,
                 userId: req.user.id
             }
         })
-        return res.status(201).json({ success: true, message: "Registered as recruiter!" })
+        return res.status(201).json({ success: true, message: "Registered as recruiter!", recruiter })
     } catch (err: any) {
         if (err.code === "P2002") {
             return res.status(400).json({ success: false, error: "User already registered as recruiter" })
