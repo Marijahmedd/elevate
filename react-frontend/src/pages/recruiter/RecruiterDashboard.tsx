@@ -3,6 +3,7 @@ import JobDetail from "@/components/JobDetail";
 
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { api } from "@/lib/axios"
+import { useStore } from "@/store/useStore";
 import type { Job } from "@/types/job"
 // import { jobList } from "@/lib/mock-data"
 import { useQuery } from "@tanstack/react-query"
@@ -13,7 +14,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 const RecruiterDashboard = () => {
 
     const navigate = useNavigate()
-
+    const user = useStore(state => state.user)
     const [searchParams, setSearchParams] = useSearchParams();
     const jobId: string | null = searchParams.get("job_id")
     let pageNumber = Number(searchParams.get("page")) || 1
@@ -25,7 +26,7 @@ const RecruiterDashboard = () => {
     filterParams.delete("job_id")
 
     const { isPending, isError, data } = useQuery({
-        queryKey: ['recruiterJobs', filterParams.toString()],
+        queryKey: ['recruiterJobs', filterParams.toString(), user?.id],
         queryFn: async () => {
             const data = await api.get(`/recruiter/jobs?${params}`)
             return data

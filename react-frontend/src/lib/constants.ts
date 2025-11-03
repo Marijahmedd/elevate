@@ -21,9 +21,9 @@ export const LocationTypeLabels: Record<LocationType, string> = {
 }
 
 
-export const applicationSatusLabels: Record<applicationStatusType, string> = {
+export const applicationStatusLabels: Record<applicationStatusType, string> = {
     ACCEPTED: "Accepted",
-    PENDING_REVIEW: "Pending review..",
+    PENDING_REVIEW: "Pending Review",
     REJECTED: "Rejected",
     SHORTLISTED: "Shortlisted"
 }

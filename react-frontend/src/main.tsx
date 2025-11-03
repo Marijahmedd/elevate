@@ -29,12 +29,14 @@ createRoot(document.getElementById('root')!).render(
             <Route element={<ProtectedRoute />}>
               <Route element={< UserLayout />}>
                 <Route element={<Profile />} path='profile' />
-                <Route element={<AiSearch />} path='ai-search' />
 
                 <Route element={<RecruiterRegister />} path='recruiter/register' />
               </Route>
             </Route>
 
+            <Route element={< UserLayout />}>
+              <Route element={<AiSearch />} path='ai-search' />
+            </Route>
 
             <Route element={< JobListingLayout />}>
               <Route element={<JobListing />} path='jobs' />

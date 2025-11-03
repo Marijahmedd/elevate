@@ -7,7 +7,7 @@ export default function RecruiterLayout() {
     return (
         <SidebarProvider>
             <RecruiterSidebar />
-            <main className="w-full">
+            <main className="w-full min-w-0 overflow-x-hidden">
                 <SidebarTrigger />
                 <Outlet />
                 <Toaster position="bottom-right" />

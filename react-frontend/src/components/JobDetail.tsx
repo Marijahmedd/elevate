@@ -37,7 +37,6 @@ const JobDetail = () => {
     const { data, isPending, isError } = useQuery({
         queryKey: ['job_details', jobId],
         queryFn: async () => {
-            await new Promise((resolve) => setTimeout(resolve, 3000));
             return api.get(`/jobs/${jobId}`);
         },
         enabled: !!jobId,
@@ -47,7 +46,6 @@ const JobDetail = () => {
     const { data: applicationData, isPending: isPendingStatus, refetch: refetchStatus } = useQuery({
         queryKey: ['job_application_status', jobId],
         queryFn: async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000));
             return api.get(`/jobs/${jobId}/status`);
         },
         enabled: !!token && !!jobId,
