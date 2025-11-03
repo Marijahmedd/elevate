@@ -52,7 +52,7 @@ export const getPublicJobs = async (req: Request, res: Response) => {
                 salaryMin: true,
                 salaryMax: true,
                 recruiter: {
-                    select: { organizationName: true }
+                    select: { organizationName: true, organizationImageKey: true }
                 }
             },
             orderBy: {
@@ -84,7 +84,8 @@ export const getPublicJobDetails = async (req: Request, res: Response) => {
                 createdAt: true, jobType: true, location: true, salaryMax: true, salaryMin: true, title: true, description: true,
                 recruiter: {
                     select: {
-                        organizationName: true
+                        organizationName: true,
+                        organizationImageKey: true
                     }
                 }
             }

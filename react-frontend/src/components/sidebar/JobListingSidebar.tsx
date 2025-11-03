@@ -4,14 +4,12 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
-    SidebarHeader,
     SidebarMenu,
 
 } from "@/components/ui/sidebar"
 import { cities } from "../../../../shared/cities"
 import { X } from "lucide-react"
 import { useSearchParams } from "react-router-dom"
-import { Separator } from "@/components/ui/separator"
 import { Controller, useForm } from "react-hook-form"
 import { AutocompleteInput } from "./../ui/autocomplete-input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -179,7 +177,10 @@ export function JobListingSidebar() {
 
                                     <button
                                         type="submit"
-                                        className="  mx-2 mt-2 w-[50%] rounded bg-blue-600 py-2 font-semibold hover:bg-blue-700 "
+                                        className="  mx-2 mt-2 w-[50%] rounded bg-neutral-600 py-2 font-semibold hover:bg-neutral-700 
+                                        
+
+                                        "
                                     >
                                         {isSubmitting ? "Searching..." : "Search"}
                                     </button>

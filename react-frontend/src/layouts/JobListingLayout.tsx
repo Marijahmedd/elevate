@@ -8,7 +8,6 @@ export default function JobListingLayout() {
         <SidebarProvider>
             <JobListingSidebar />
             <main className="w-full flex-1 min-h-svh overflow-y-auto relative min-w-0">
-                {/* Mobile header: use fixed to avoid sticky edge cases on iOS */}
                 <div className="block md:hidden">
                     <header className="fixed top-0 inset-x-0 z-50 flex items-center justify-start py-3 px-4 border-b border-neutral-800 bg-neutral-900/95 backdrop-blur-sm">
                         <SidebarTrigger />

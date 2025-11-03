@@ -20,3 +20,18 @@ export async function generatePresignedUrl(bucketName: string, objectKey: string
     const url = await getSignedUrl(s3Client, command, { expiresIn: expiresInSeconds });
     return url;
 }
+
+
+
+export async function generatePresignedUrlImage(bucketName: string, objectKey: string, contentType: string, expiresInSeconds = 3600) {
+
+    objectKey = `images/${objectKey}.jpeg`
+    const command = new PutObjectCommand({
+        Bucket: bucketName,
+        Key: objectKey,
+        ContentType: contentType,
+    });
+    const url = await getSignedUrl(s3Client, command, { expiresIn: expiresInSeconds });
+    return url;
+}
+

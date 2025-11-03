@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { z } from "zod"
 import { prisma } from "../lib/prisma"
-import { generatePresignedUrl } from "../lib/presigned-url"
+import { generatePresignedUrl, generatePresignedUrlImage } from "../lib/presigned-url"
 import { invokeLambda } from "../lib/aws"
 
 
@@ -13,19 +13,23 @@ export const registerAsRecruiter = async (req: Request, res: Response) => {
     }
 
     const bodySchema = z.object({
-        organizationName: z.string().trim().min(1).max(60)
+        organizationName: z.string().trim().min(1).max(60),
+        key: z.string().trim().min(30).max(50)
+
     })
+    console.log(req.body)
     const parseResult = bodySchema.safeParse(req.body)
 
     if (!parseResult.success) {
-        return res.status(400).json({ success: false, error: "Invalid organization name provided" })
+        return res.status(400).json({ success: false, error: "Invalid input provided" })
     }
-    const { organizationName } = parseResult.data
+    const { organizationName, key } = parseResult.data
 
     try {
         const recruiter = await prisma.recruiter.create({
             data: {
                 organizationName,
+                organizationImageKey: key,
                 userId: req.user.id
             }
         })
@@ -176,5 +180,29 @@ export const isAppliedForJob = async (req: Request, res: Response) => {
 
     } catch (err) {
         return res.status(500).json({ success: false, error: "Something went wrong!" })
+    }
+}
+
+
+
+
+
+
+
+export const generateImagePresignedUrl = async (req: Request, res: Response) => {
+    try {
+        if (!req.user?.id) {
+            return res.status(401).json({ success: false, error: "User must be logged in" })
+        }
+
+        const bucket = "elevate-s3-marij";
+        const key = req.user.id;
+        const contentType = "image/jpeg"
+        const presignedUrl = await generatePresignedUrlImage(bucket, key, contentType)
+        console.log("Presigned PUT URL:", presignedUrl);
+        return res.status(200).json({ success: true, presignedUrl, key: `${key}.jpeg` })
+    } catch (error) {
+        return res.status(500).json({ success: false, error: "Internal Server Error" })
+
     }
 }

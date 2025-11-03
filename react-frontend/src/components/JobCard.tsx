@@ -1,5 +1,5 @@
 import { jobTypeLabels, LocationTypeLabels } from "@/lib/constants"
-import { capitalizeFirst, convertIntoK } from "@/lib/utility"
+import { capitalizeFirst, convertIntoK, keyToS3Url } from "@/lib/utility"
 import type { Job } from "@/types/job"
 import { Banknote, Briefcase, Clock, MapPin } from "lucide-react"
 const JobCard = ({ job }: { job: Job }) => {
@@ -9,10 +9,11 @@ const JobCard = ({ job }: { job: Job }) => {
 
             <div className="flex items-center gap-4">
                 <img
-                    src="https://media.wired.com/photos/5926ffe47034dc5f91bed4e8/3:2/w_1920,c_limit/google-logo.jpg"
+                    src={keyToS3Url(`images/${job.recruiter.organizationImageKey}`)}
                     alt="User"
                     className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shrink-0"
                 />
+
                 <div className="flex-1 min-w-0">
                     <h1 className="font-bold text-lg truncate">{job.title}</h1>
                     <div className="text-gray-300 text-sm truncate">{job.recruiter.organizationName}</div>

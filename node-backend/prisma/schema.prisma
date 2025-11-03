@@ -27,6 +27,7 @@ model Recruiter{
     id String @id @default(uuid())
     userId String @unique 
     organizationName String 
+    organizationImageKey String?
     jobs Job[] 
 createdAt DateTime @default(now())
 

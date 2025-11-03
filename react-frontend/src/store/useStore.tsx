@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast"
 import { api } from '@/lib/axios';
 import { persist } from "zustand/middleware"
 import { queryClient } from '@/main';
+import type { Recruiter } from '@/types/job';
 type User = {
     id: string;
     resumeUrl: string | null;
@@ -12,9 +13,7 @@ type User = {
     recruiter: Recruiter | null
 }
 
-type Recruiter = {
-    organizationName: string
-}
+
 
 
 type Store = {

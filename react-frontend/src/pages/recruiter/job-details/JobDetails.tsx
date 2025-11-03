@@ -57,7 +57,7 @@ export default function RecruiterJobDetails() {
     const capsuleStyle = 'flex items-center gap-2 text-white text-sm border-1 px-3 py-1 rounded-lg w-max hover:bg-neutral-700 whitespace-nowrap'
 
     return (
-        <div className="py-4 px-6 space-y-6 max-w-full overflow-x-hidden">
+        <div className="py-6 px-6 space-y-6 max-w-full overflow-x-hidden">
             <div>
                 <div className="text-3xl font-bold mb-2 ">{jobDetails.title}</div>
                 <div className="flex items-center gap-2 text-muted-foreground">

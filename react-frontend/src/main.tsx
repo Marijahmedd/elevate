@@ -16,6 +16,7 @@ import RecruiterLayout from './layouts/RecruiterLayout.tsx'
 import AiSearch from './pages/ai-search/AiSearch.tsx'
 import RecruiterJobDetails from './pages/recruiter/job-details/JobDetails.tsx'
 import RecruiterJobCreate from './pages/recruiter/create-job/RecruiterJobCreate.tsx'
+import Home from './pages/home/Home.tsx'
 
 
 export const queryClient = new QueryClient()
@@ -41,6 +42,10 @@ createRoot(document.getElementById('root')!).render(
             <Route element={< JobListingLayout />}>
               <Route element={<JobListing />} path='jobs' />
             </Route>
+
+
+            <Route element={<Home />} path='/' />
+
 
             <Route element={< ProtectedRoute />}>
               <Route element={< RecruiterRoute />}>

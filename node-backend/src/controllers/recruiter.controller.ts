@@ -3,6 +3,7 @@ import { z } from "zod"
 import { prisma } from "../lib/prisma"
 import { lowerCaseCities } from "../../../shared/cities.js"
 import { ApplicationStatusEnum, jobTypeEnum, locationEnum } from "../../../shared/constants.js"
+import { generatePresignedUrlImage } from "../lib/presigned-url"
 
 
 
@@ -139,7 +140,8 @@ export const getJobDetails = async (req: Request, res: Response) => {
                 createdAt: true, jobType: true, location: true, salaryMax: true, salaryMin: true, title: true, description: true,
                 recruiter: {
                     select: {
-                        organizationName: true
+                        organizationName: true,
+                        organizationImageKey: true
                     }
                 },
                 applications: {
@@ -171,6 +173,7 @@ export const getJobDetails = async (req: Request, res: Response) => {
     }
 
 }
+
 
 
 export const updateApplicationStatus = async (req: Request, res: Response) => {
@@ -220,6 +223,7 @@ export const updateApplicationStatus = async (req: Request, res: Response) => {
         return res.status(500).json({ success: false, message: "Internal Server Error" })
     }
 }
+
 
 
 
