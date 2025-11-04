@@ -2,7 +2,7 @@ import { Router } from "express"
 import { authenticatedReq } from "../lib/auth-middleware"
 import { GoogleLogin } from "../controllers/auth.controller"
 import { applyForJob, generateImagePresignedUrl, generatePresignedUrlResume, isAppliedForJob, registerAsRecruiter, updateResume } from "../controllers/user.controller"
-import { getJobDetails, getPostedJobs, postJob, updateApplicationStatus } from "../controllers/recruiter.controller"
+import { deleteJob, getJobDetails, getPostedJobs, postJob, updateApplicationStatus } from "../controllers/recruiter.controller"
 import { recruiterRequest } from "../lib/recruiter-middleware"
 import { getPublicJobDetails, getPublicJobs } from "../controllers/public.controller"
 import { updateAiScore } from "../controllers/webhook"
@@ -29,6 +29,8 @@ router.get("/image-presigned-url", authenticatedReq, generateImagePresignedUrl)
 router.get("/recruiter/jobs", authenticatedReq, recruiterRequest, getPostedJobs)
 router.post("/recruiter/jobs", authenticatedReq, recruiterRequest, postJob)
 router.get("/recruiter/jobs/:id", authenticatedReq, recruiterRequest, getJobDetails)
+router.delete("/recruiter/jobs/:id", authenticatedReq, recruiterRequest, deleteJob)
+
 router.post("/recruiter/applications/status", authenticatedReq, recruiterRequest, updateApplicationStatus)
 
 

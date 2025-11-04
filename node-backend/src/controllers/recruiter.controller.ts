@@ -227,4 +227,33 @@ export const updateApplicationStatus = async (req: Request, res: Response) => {
 
 
 
+export const deleteJob = async (req: Request, res: Response) => {
+    if (!req.user?.id) {
+        return res.status(401).json({ success: false, error: "User must be logged in" })
+    }
+    if (!req.user.recruiterId) {
+        return res.status(403).json({ success: false, error: "User is not registered as a recruiter!" })
+    }
 
+    const jobId = req.params.id
+    if (!jobId || typeof jobId !== "string") {
+        return res.status(400).json({ success: false, error: "Invalid Job Id provided." })
+    }
+    try {
+        const deleteJobResponse = await prisma.job.delete({
+            where: {
+                id: jobId,
+                recruiterId: req.user.recruiterId
+            }
+        })
+        console.log(deleteJobResponse)
+        return res.status(200).json({ success: true, error: "Successfully deleted job!" })
+
+    } catch (error) {
+        console.log(error)
+        if ((error as any).code === "P2025") {
+            return res.status(403).json({ success: false, error: "Cannot Delete This Job!" })
+        }
+        return res.status(500).json({ success: false, error: "Error Deleting Job!" })
+    }
+}
