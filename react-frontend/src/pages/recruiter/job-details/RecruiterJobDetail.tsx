@@ -1,11 +1,11 @@
-import { useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
+import { useNavigate, useParams } from 'react-router-dom'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { useStore } from '@/store/useStore'
 import { api } from '@/lib/axios'
 import { Spinner } from 'flowbite-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Separator } from '@/components/ui/separator'
-import { Building2, Clock10, MapPin, Clock, Briefcase, Banknote, AlertCircle } from 'lucide-react'
+import { Building2, Clock10, MapPin, Clock, Briefcase, Banknote, AlertCircle, MoreVertical } from 'lucide-react'
 import { formatDistanceToNowStrict } from 'date-fns'
 import { capitalizeFirst, convertIntoK } from '@/lib/utility'
 import { jobTypeLabels, LocationTypeLabels, } from '@/lib/constants'
@@ -13,6 +13,11 @@ import type { applicationStatusType } from '@/lib/constants'
 import type { JobDetails as JobDetailsType } from '@/types/job'
 import ApplicationTable from '@/components/ApplicationTable'
 import DOMPurify from "dompurify"
+import { Button } from '@/components/ui/button'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DeleteJobDialog } from '@/components/ui/delete-dialog'
+import toast from 'react-hot-toast'
+import { queryClient } from '@/main'
 
 
 type Applicant = { name: string; email: string; pictureUrl: string | null }
@@ -22,6 +27,26 @@ type JobDetailsResponse = { success: boolean; jobDetails: JobDetailsType & { app
 export default function RecruiterJobDetails() {
     const { jobId } = useParams<{ jobId: string }>()
     const user = useStore((s) => s.user)
+    const navigate = useNavigate()
+
+
+
+    const deleteJobMutation = useMutation({
+        mutationFn: async () => {
+            await api.delete(`/recruiter/jobs/${jobId}`)
+        },
+        onSuccess: () => {
+            toast.success("Successfully deleted job!")
+            queryClient.invalidateQueries({ queryKey: ["recruiterJobs"] })
+            navigate("/recruiter")
+
+        },
+        onError: () => {
+            toast.error("Cannot delete job!")
+
+        }
+    })
+
 
     const { data, isLoading, isError } = useQuery<JobDetailsResponse>({
         queryKey: ['recruiter_job_details', jobId, user?.id],
@@ -57,10 +82,27 @@ export default function RecruiterJobDetails() {
     const capsuleStyle = 'flex items-center gap-2 text-white text-sm border-1 px-3 py-1 rounded-lg w-max hover:bg-neutral-700 whitespace-nowrap'
 
     return (
-        <div className="py-6 px-6 space-y-6 max-w-full overflow-x-hidden">
+        <div className="py-10 px-8 space-y-6 max-w-full overflow-x-hidden">
             <div>
-                <div className="text-3xl font-bold mb-2 ">{jobDetails.title}</div>
-                <div className="flex items-center gap-2 text-muted-foreground">
+                <div className="flex justify-between items-start gap-2">
+                    <h1 className="text-3xl font-bold flex-1 wrap-break-word">{jobDetails.title}</h1>
+
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="secondary" size="icon">
+                                <MoreVertical />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuItem asChild className="text-red-600" >
+                                <DeleteJobDialog deleteJobMutation={deleteJobMutation} />
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+
+                <div className="flex items-center gap-2 text-muted-foreground mt-2">
                     <Building2 size={14} />
                     <span className="text-sm font-medium">{jobDetails.recruiter.organizationName}</span>
                 </div>

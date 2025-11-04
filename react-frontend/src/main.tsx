@@ -14,9 +14,10 @@ import RecruiterDashboard from './pages/recruiter/RecruiterDashboard.tsx'
 import RecruiterRegister from './pages/recruiter/register-recruiter/RecruiterRegister.tsx'
 import RecruiterLayout from './layouts/RecruiterLayout.tsx'
 import AiSearch from './pages/ai-search/AiSearch.tsx'
-import RecruiterJobDetails from './pages/recruiter/job-details/JobDetails.tsx'
+import RecruiterJobDetails from './pages/recruiter/job-details/RecruiterJobDetail.tsx'
 import RecruiterJobCreate from './pages/recruiter/create-job/RecruiterJobCreate.tsx'
 import Home from './pages/home/Home.tsx'
+import NotFound from './pages/not-found/NotFound.tsx'
 
 
 export const queryClient = new QueryClient()
@@ -57,6 +58,13 @@ createRoot(document.getElementById('root')!).render(
                 </Route>
               </Route>
             </Route>
+
+
+
+
+            {/* 404 route */}
+            <Route path="*" element={<NotFound />} />
+
           </Routes>
         </BrowserRouter>
       </QueryClientProvider>

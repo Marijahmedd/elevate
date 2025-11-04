@@ -52,7 +52,7 @@ export default function ApplicationTable({ applications }: { applications: Appli
             renderCell(params) {
                 return (
                     <div className='flex gap-2 items-center'>
-                        <img src={params.value.profileImage} className=' h-8 w-8  rounded-full' alt="user" />
+                        <img src={params.value.profileImage} referrerPolicy='no-referrer' className=' h-8 w-8  rounded-full' alt="user" />
                         <p>{params.value.name}</p>
 
                     </div>)

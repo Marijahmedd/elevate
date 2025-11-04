@@ -1,85 +1,94 @@
 import JobCard from "@/components/JobCard"
-import JobDetail from "@/components/JobDetail";
-
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input"
 import { api } from "@/lib/axios"
-import { useStore } from "@/store/useStore";
+import { useStore } from "@/store/useStore"
 import type { Job } from "@/types/job"
-// import { jobList } from "@/lib/mock-data"
 import { useQuery } from "@tanstack/react-query"
-import { useNavigate, useSearchParams } from "react-router-dom";
-
+import { SearchIcon } from "lucide-react"
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 const RecruiterDashboard = () => {
-
+    const [searchValue, setSearchValue] = useState("")
+    const [filteredData, setFilteredData] = useState<Job[]>([])
     const navigate = useNavigate()
     const user = useStore(state => state.user)
-    const [searchParams, setSearchParams] = useSearchParams();
-    const jobId: string | null = searchParams.get("job_id")
-    let pageNumber = Number(searchParams.get("page")) || 1
-    if (pageNumber < 1) {
-        pageNumber = 1
-    }
-    const params = searchParams.toString();
-    const filterParams = new URLSearchParams(searchParams) //Seperating so irrelevant params donot refetch job listings
-    filterParams.delete("job_id")
 
     const { isPending, isError, data } = useQuery({
-        queryKey: ['recruiterJobs', filterParams.toString(), user?.id],
+        queryKey: ["recruiterJobs", user?.id],
         queryFn: async () => {
-            const data = await api.get(`/recruiter/jobs?${params}`)
-            return data
+            const res = await api.get(`/recruiter/jobs`)
+            return res.data.jobsPosted
         },
         staleTime: 1000 * 60 * 5
     })
 
-    if (isPending) {
+    useEffect(() => {
+        if (data) setFilteredData(data)
+    }, [data])
+
+    useEffect(() => {
+        if (!data) return
+        const value = searchValue.trim().toLowerCase()
+        const handler = setTimeout(() => {
+            if (!value) {
+                setFilteredData(data)
+                return
+            }
+            const filtered = data.filter((job: Job) =>
+                job.title.toLowerCase().includes(value)
+            )
+            setFilteredData(filtered)
+        }, 400)
+        return () => clearTimeout(handler)
+    }, [searchValue, data])
+
+    if (isPending)
         return <span className="flex items-center justify-center h-150 text-2xl">Loading...</span>
-    }
 
-    if (isError) {
-        return <span className="flex items-center justify-center h-150 text-2xl">{"Something went Wrong!"}</span>
-    }
-
-
-
-    const jobList: Job[] = data.data.jobsPosted
-    const jobCount: number = jobList.length < 1 ? 1 : jobList.length
+    if (isError)
+        return <span className="flex items-center justify-center h-150 text-2xl">Something went wrong!</span>
 
     return (
         <div>
-            {jobList.length === 0 ? (
-                <div className="flex items-center justify-center h-150 text-2xl">No Jobs Found!</div>
-            ) :
+
+
+            {filteredData.length === 0 ? (
+                <div className="flex items-center justify-center h-150 text-2xl">
+                    No Job Found!
+                </div>
+            ) : (
                 <>
+                    <div className="flex flex-col px-4 mt-4 gap-3">
+                        <div className="relative">
+                            <Input
+                                type="text"
+                                placeholder="Search"
+                                className="pl-10 w-[300px]"
+                                value={searchValue}
+                                onChange={e => setSearchValue(e.target.value)}
+                            />
+                            <SearchIcon className="absolute h-4 w-4 left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                        </div>
+                        <p className="text-muted-foreground text-sm">
+                            Total posted Jobs : {data.length}
+                        </p>
+                    </div>
                     <ul className="px-4 min-h-svh">
-                        {jobList.map((job) => (
-                            <li key={job.id} onClick={() => {
-                                navigate(`/recruiter/jobs/${job.id}`)
-                            }}>
+                        {filteredData.map(job => (
+                            <li
+                                key={job.id}
+                                onClick={() => navigate(`/recruiter/jobs/${job.id}`)}
+                            >
                                 <JobCard job={job} />
                             </li>
                         ))}
                     </ul>
-
                 </>
-            }
 
-
-            {/* JOB DETAILS PAGE */}
-
-
-
-            <Sheet open={!!jobId}>
-                <SheetContent side="right" className="sm:w-[600px] w-screen ">
-                    <JobDetail />
-                </SheetContent>
-            </Sheet>
-
-        </div >
+            )}
+        </div>
     )
-
-
 }
 
 export default RecruiterDashboard
