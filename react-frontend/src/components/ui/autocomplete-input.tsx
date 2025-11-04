@@ -1,3 +1,4 @@
+import { capitalizeFirst } from "@/lib/utility";
 import { X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
@@ -59,11 +60,11 @@ export function AutocompleteInput({ options, value, onChange, placeholder }: any
                             key={item}
                             className="px-3 py-2 cursor-pointer hover:bg-zinc-800 text-sm"
                             onClick={() => {
-                                onChange(item);
+                                onChange(capitalizeFirst(item));
                                 setOpen(false);
                             }}
                         >
-                            {item}
+                            {capitalizeFirst(item)}
                         </li>
                     ))}
                 </ul>

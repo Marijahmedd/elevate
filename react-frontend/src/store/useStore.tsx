@@ -58,15 +58,12 @@ export const useStore = create<Store>()(
                     if (result.status !== 200) {
                         throw new Error("Unable to sign in!")
                     }
-                    console.log(result.data, "Whole payload")
                     const userData: User = result.data.user
-                    console.log(userData)
                     set((state) => ({
                         ...state, token: result.data.accessToken, user: userData
                     }))
 
                     toast.success("successfully signed in!")
-                    console.log(credential)
 
                 } catch (err) {
 

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/stateful-button"
 import { jobTypeLabels, LocationTypeLabels } from '@/lib/constants';
 import { Spinner } from "flowbite-react";
 import { formatDistanceToNowStrict } from "date-fns"
+import DOMPurify from "dompurify";
 import {
     MapPin,
     Briefcase,
@@ -152,11 +153,17 @@ const JobDetail = () => {
                     {/* Description */}
                     <div>
                         <h3 className="font-semibold mb-3 text-lg">Job Description</h3>
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-wrap text-md">
+                        {/* <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-wrap text-md">
                             {jobDetails.description}
 
 
-                        </p>
+                        </p> */}
+                        <div className='text-muted-foreground leading-relaxed whitespace-pre-line text-wrap text-md'
+                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(jobDetails.description || "") }}
+
+                        />
+
+
                     </div>
                 </div >
             </div>

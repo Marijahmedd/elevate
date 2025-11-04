@@ -7,7 +7,7 @@ import {
     SidebarMenu,
 
 } from "@/components/ui/sidebar"
-import { cities } from "../../../../shared/cities"
+import { lowerCaseCities } from "../../../../shared/cities"
 import { X } from "lucide-react"
 import { useSearchParams } from "react-router-dom"
 import { Controller, useForm } from "react-hook-form"
@@ -39,7 +39,7 @@ export function JobListingSidebar() {
     const { register, control, handleSubmit, formState: { isSubmitting } } = useForm({
         defaultValues: {
             q: getParam("q"),
-            city: cities.includes(getParam("city") as typeof cities[number]) ? getParam("city") : "",
+            city: lowerCaseCities.includes(getParam("city") as typeof lowerCaseCities[number]) ? getParam("city") : "",
             jobtype: jobTypeEnum.includes(getParam("jobtype") as JobType) ? getParam("jobtype") : "",
             location: locationEnum.includes(getParam("location") as LocationType) ? getParam("location") : "",
         }
@@ -47,7 +47,6 @@ export function JobListingSidebar() {
 
 
     const onSubmit = async <T extends Record<string, string>>(data: T): Promise<void> => {
-        console.log(data, "data")
         const normalizedData = { ...data, jobtype: data.jobtype ? data.jobtype.toLowerCase() : "", location: data.location ? data.location.toLowerCase() : "" }
 
         let searchQuery: Record<string, string> = {}
@@ -56,7 +55,6 @@ export function JobListingSidebar() {
                 searchQuery[key] = normalizedData[key]
             }
         }
-        console.log(searchQuery)
         const params = new URLSearchParams(searchQuery);
         navigate(`?${params.toString()}`);
     };
@@ -95,7 +93,7 @@ export function JobListingSidebar() {
                                         render={({ field }) => (
                                             <AutocompleteInput
                                                 placeholder="Select city..."
-                                                options={cities}
+                                                options={lowerCaseCities}
                                                 value={field.value}
                                                 onChange={field.onChange}
                                             />

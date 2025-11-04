@@ -43,7 +43,6 @@ const JobListing = () => {
 
     const jobList: Job[] = data.data.jobs
     const jobCount: number = data.data.count < 1 ? 1 : data.data.count
-    console.log(jobList)
 
     return (
         <div>

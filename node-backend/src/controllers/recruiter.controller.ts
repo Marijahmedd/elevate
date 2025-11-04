@@ -105,6 +105,7 @@ export const getPostedJobs = async (req: Request, res: Response) => {
                 recruiter: {
                     select: {
                         organizationName: true,
+                        organizationImageKey: true
                     }
                 }
             }

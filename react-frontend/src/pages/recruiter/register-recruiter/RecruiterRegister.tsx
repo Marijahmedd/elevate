@@ -27,12 +27,10 @@ export default function RecruiterRegister() {
 
     const { mutateAsync } = useMutation({
         mutationFn: async (data: { organizationName: string, key: string }) => {
-            console.log(data, "uploaded data")
             const result = await api.post('/recruiters', data)
             return result
         },
         onSuccess: (result) => {
-            console.log(result.data)
             const { organizationName, organizationImageKey } = result.data.recruiter
             const recruiterData = { organizationName, organizationImageKey }
             useStore.setState((state) => {
@@ -52,18 +50,15 @@ export default function RecruiterRegister() {
         try {
             setIsLoading(true)
             const organizationName = data.organizationName
-            console.log("data recieved from form", organizationName)
             const presignedData = await api.get('/image-presigned-url')
             const { presignedUrl, key } = presignedData.data
-            console.log(presignedUrl, key)
-            const uploadResponse = await fetch(presignedUrl, {
+            await fetch(presignedUrl, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': selectedImage.type,
                 },
                 body: selectedImage,
             });
-            console.log(uploadResponse)
             const requestData = { organizationName, key }
             await mutateAsync(requestData)
             setIsLoading(false)
@@ -100,7 +95,7 @@ export default function RecruiterRegister() {
                     <div className="flex justify-center">
                         <img
                             src={selectedImage ? URL.createObjectURL(selectedImage) : "/organization.png"}
-                            className="object-cover border-2 p-2 scale-120 h-30 w-30 rounded-full border-dashed "
+                            className="object-cover border-2 p-2 scale-125 h-30 w-30 rounded-full border-dashed "
                             alt="" />
                     </div>
 

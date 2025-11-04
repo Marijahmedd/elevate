@@ -12,7 +12,7 @@ import { jobTypeLabels, LocationTypeLabels, } from '@/lib/constants'
 import type { applicationStatusType } from '@/lib/constants'
 import type { JobDetails as JobDetailsType } from '@/types/job'
 import ApplicationTable from '@/components/ApplicationTable'
-
+import DOMPurify from "dompurify"
 
 
 type Applicant = { name: string; email: string; pictureUrl: string | null }
@@ -95,7 +95,10 @@ export default function RecruiterJobDetails() {
 
             <div>
                 <h3 className="font-semibold mb-3 text-lg">Job Description</h3>
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{jobDetails.description}</p>
+                <div className='text-muted-foreground leading-relaxed whitespace-pre-line text-wrap text-md'
+                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(jobDetails.description || "") }}
+
+                />
             </div>
 
             <Separator />

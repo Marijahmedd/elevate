@@ -20,7 +20,6 @@ export const recruiterRequest = async (req: Request, res: Response, next: NextFu
             return res.status(403).json({ success: false, error: "User is not registered as recruiter" })
         }
         req.user.recruiterId = recruiterData.id
-        console.log(req.user)
         next()
 
     } catch (error) {

@@ -7,7 +7,6 @@ import { useStore } from "@/store/useStore";
 import type { Job } from "@/types/job"
 // import { jobList } from "@/lib/mock-data"
 import { useQuery } from "@tanstack/react-query"
-import { Pagination } from "flowbite-react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 
@@ -46,7 +45,6 @@ const RecruiterDashboard = () => {
 
     const jobList: Job[] = data.data.jobsPosted
     const jobCount: number = jobList.length < 1 ? 1 : jobList.length
-    console.log(jobList)
 
     return (
         <div>
@@ -64,16 +62,6 @@ const RecruiterDashboard = () => {
                         ))}
                     </ul>
 
-                    <div className="flex justify-center mb-10">
-                        <Pagination
-                            currentPage={pageNumber}
-                            totalPages={Math.ceil(jobCount / 10)}
-                            onPageChange={(page: number) => {
-                                searchParams.set("page", page.toString());
-                                setSearchParams(searchParams);
-                            }}
-                        />
-                    </div>
                 </>
             }
 

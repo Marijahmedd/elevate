@@ -9,6 +9,7 @@ import { useMutation } from '@tanstack/react-query'
 import { api } from '@/lib/axios'
 import toast from 'react-hot-toast'
 import { useMemo } from 'react'
+import { RatingCircle } from './ui/rating-circle'
 
 const darkTheme = createTheme({
     palette: {
@@ -70,9 +71,13 @@ export default function ApplicationTable({ applications }: { applications: Appli
             },
             renderCell: (params) =>
                 params.value === null ? (
-                    <span className='text-neutral-500'>-</span>
+                    <div className=" flex h-full justify-center items-center">
+                        -
+                    </div>
                 ) : (
-                    params.value
+                    <div className=" flex h-full justify-center items-center">
+                        <RatingCircle value={params.value} />
+                    </div>
                 ),
         },
         {
