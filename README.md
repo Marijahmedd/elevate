@@ -22,7 +22,13 @@ File Storage: Amazon S3 for resumes and organization images using pre-signed URL
 
 Network: EC2 and RDS inside a VPC; CloudFront serves the static frontend from S3.
 
+
+
+
+
 **Design Decisions**
+
+
 
 - **Google OAuth + JWT**
 
@@ -50,7 +56,14 @@ Used lambda in async/event mode. When a user applies for a job. Job application 
 
 Lambda calls back the backend with an internal secret token to update job application scores securely.
 
+
+
+
+
+
 **Workflow**
+
+
 
 - **File Upload**
 
@@ -79,7 +92,12 @@ Lambda calls back the backend with an internal secret token to update job applic
 
 - Verifies token and updates the job application record in PostgreSQL.
 
+
+
 **Core Features**
+
+
+
 
 **Recruiter**
 
@@ -98,6 +116,7 @@ Lambda calls back the backend with an internal secret token to update job applic
 - (Planned) AI-powered job search using vector embeddings.
 
 **Tech Stack**
+
 
 Frontend: React, Tailwind CSS, Shadcn, Tanstack Query, MUI.
 
