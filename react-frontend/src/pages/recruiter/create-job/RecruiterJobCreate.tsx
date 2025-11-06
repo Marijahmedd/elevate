@@ -11,6 +11,7 @@ import { convertIntoK } from "@/lib/utility";
 import { useMutation } from "@tanstack/react-query";
 import { lowerCaseCities } from "../../../../../shared/cities";
 import { AutocompleteInput } from "@/components/ui/autocomplete-input";
+import { queryClient } from "@/main";
 
 const minSalaryRanges = [10000, 40000, 60000, 80000, 100000, 150000, 200000, 300000, 500000]
 const maxSalaryRanges = [10000, 40000, 60000, 80000, 100000, 150000, 200000, 300000, 500000, 1000000]
@@ -32,11 +33,11 @@ export default function RecruiterJobCreate() {
     const modules = {
         toolbar: [
             ["bold", "italic", "underline"],
-            [{ list: "ordered" }, { list: "bullet" }],
+
         ],
     };
 
-    const formats = ["bold", "italic", "underline", "list"];
+    const formats = ["bold", "italic", "underline"];
 
     const handleChange = (content: string, _delta: any, _source: string, editor: any) => {
         const plainText = editor.getText().trim();
@@ -58,6 +59,7 @@ export default function RecruiterJobCreate() {
         },
         onSuccess: () => {
             toast.success("Job posted successfully!");
+            queryClient.invalidateQueries({ queryKey: ['recruiterJobs'] })
             setTitle("");
             setCity("");
             setLocation("");
@@ -174,7 +176,6 @@ export default function RecruiterJobCreate() {
                     </SelectContent>
                 </Select>
             </div>
-
             <p className="text-xs text-gray-400 mt-1">
                 Select monthly salary range (PKR)
             </p>

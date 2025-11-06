@@ -4,8 +4,6 @@ import type { JobType, LocationType } from "@/lib/constants";
 export type Recruiter = {
     organizationName: string
     organizationImageKey: string
-
-
 }
 
 export type Job = {

@@ -10,6 +10,9 @@ import { api } from '@/lib/axios'
 import toast from 'react-hot-toast'
 import { useMemo } from 'react'
 import { RatingCircle } from './ui/rating-circle'
+import { useParams } from 'react-router-dom'
+import { queryClient } from '@/main'
+import { useStore } from '@/store/useStore'
 
 const darkTheme = createTheme({
     palette: {
@@ -30,6 +33,8 @@ const darkTheme = createTheme({
 
 export default function ApplicationTable({ applications }: { applications: Application[] }) {
 
+    const { jobId } = useParams<{ jobId: string }>()
+    const user = useStore((s) => s.user)
 
     const handleStatusChange = (e: any) => {
         const applicationId = e.target.id
@@ -42,7 +47,11 @@ export default function ApplicationTable({ applications }: { applications: Appli
             const res = await api.post('/recruiter/applications/status', { applicationId, status })
             return res.data
         },
-        onSuccess: () => toast.success('Status updated successfully'),
+        onSuccess: () => {
+            toast.success('Status updated successfully')
+            queryClient.invalidateQueries({ queryKey: ['recruiter_job_details', jobId, user?.id] })
+
+        },
         onError: () => toast.error('Failed to update status')
     })
 

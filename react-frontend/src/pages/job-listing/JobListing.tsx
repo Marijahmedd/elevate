@@ -4,7 +4,6 @@ import JobDetail from "@/components/JobDetail";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { api } from "@/lib/axios"
 import type { Job } from "@/types/job"
-// import { jobList } from "@/lib/mock-data"
 import { useQuery } from "@tanstack/react-query"
 import { Pagination } from "flowbite-react";
 import { useSearchParams } from "react-router-dom";
