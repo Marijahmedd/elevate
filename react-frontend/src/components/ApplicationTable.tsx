@@ -1,6 +1,6 @@
 import { DataGrid, type GridColDef } from '@mui/x-data-grid'
 import { capitalizeFirst, keyToS3Url } from '@/lib/utility'
-import type { Application } from '@/pages/recruiter/job-details/JobDetails'
+import type { Application } from '@/pages/recruiter/job-details/RecruiterJobDetail'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
 import { applicationStatusLabels, type applicationStatusType } from '@/lib/constants'
@@ -14,6 +14,8 @@ import { useParams } from 'react-router-dom'
 import { queryClient } from '@/main'
 import { useStore } from '@/store/useStore'
 
+
+//
 const darkTheme = createTheme({
     palette: {
         mode: 'dark',
