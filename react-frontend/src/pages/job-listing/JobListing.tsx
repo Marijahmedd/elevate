@@ -5,7 +5,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { api } from "@/lib/axios"
 import type { Job } from "@/types/job"
 import { useQuery } from "@tanstack/react-query"
-import { Pagination } from "flowbite-react";
+import { Pagination, Spinner } from "flowbite-react";
 import { useSearchParams } from "react-router-dom";
 
 
@@ -31,7 +31,8 @@ const JobListing = () => {
     })
 
     if (isPending) {
-        return <span className="flex items-center justify-center h-150 text-2xl">Loading...</span>
+        return <span className="flex items-center justify-center h-150 text-2xl">                        <Spinner color="gray" aria-label="Loading" />
+        </span>
     }
 
     if (isError) {

@@ -18,12 +18,14 @@ import { jobTypeEnum, locationEnum } from "../../../../shared/constants"
 import Footer from "./../sidebar/Footer"
 import { useNavigate } from "react-router-dom";
 import Header from "./Header"
+import { useSidebar } from "@/components/ui/sidebar"
 
 
 
 
 export function JobListingSidebar() {
     const navigate = useNavigate()
+    const { isMobile, setOpenMobile } = useSidebar()
 
     // const user = useStore(state => state.user)
 
@@ -57,6 +59,8 @@ export function JobListingSidebar() {
         }
         const params = new URLSearchParams(searchQuery);
         navigate(`?${params.toString()}`);
+        // close mobile sidebar after submitting the filters (mobile only)
+        if (isMobile) setOpenMobile(false)
     };
 
     const inputClass =
@@ -175,7 +179,7 @@ export function JobListingSidebar() {
 
                                     <button
                                         type="submit"
-                                        className="  mx-2 mt-2 w-[50%] rounded bg-neutral-600 py-2 font-semibold hover:bg-neutral-700 
+                                        className="  mx-2 mt-2 w-[50%] rounded bg-green-600 py-2 font-semibold hover:bg-green-800 
                                         
 
                                         "

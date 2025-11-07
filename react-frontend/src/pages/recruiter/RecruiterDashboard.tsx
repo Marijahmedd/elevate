@@ -4,6 +4,7 @@ import { api } from "@/lib/axios"
 import { useStore } from "@/store/useStore"
 import type { Job } from "@/types/job"
 import { useQuery } from "@tanstack/react-query"
+import { Spinner } from "flowbite-react"
 import { SearchIcon } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -44,7 +45,9 @@ const RecruiterDashboard = () => {
     }, [searchValue, data])
 
     if (isPending)
-        return <span className="flex items-center justify-center h-150 text-2xl">Loading...</span>
+        return <span className="flex items-center justify-center h-150 text-2xl">
+            <Spinner color="gray" aria-label="Loading" />
+        </span>
 
     if (isError)
         return <span className="flex items-center justify-center h-150 text-2xl">Something went wrong!</span>

@@ -22,6 +22,7 @@ import {
 import { Separator } from './ui/separator';
 import { Alert, AlertDescription } from './ui/alert';
 import { useStore } from '@/store/useStore';
+import { GoogleLogin } from '@react-oauth/google'
 import { queryClient } from '@/main';
 import toast from 'react-hot-toast';
 import { capitalizeFirst, convertIntoK } from '@/lib/utility';
@@ -32,6 +33,7 @@ const JobDetail = () => {
     const userData = useStore((state) => state.user)
     const [isUploadModalOpen, setUploadModalOpen] = useState(false)
     const token = useStore((state) => state.token)
+    const login = useStore(state => state.login)
     const [searchParams] = useSearchParams();
     const jobId = searchParams.get('job_id');
 
@@ -169,9 +171,24 @@ const JobDetail = () => {
             </div>
             <SheetFooter className="bg-neutral-900">
                 {!token ? (
-                    <Button className="mb-2 hover:ring-0  bg-neutral-600" disabled onClick={() => { /* redirect to login */ }}>
-                        Login to apply
-                    </Button>
+                    <div className="mb-2 relative inline-block w-full">
+                        <button
+                            type="button"
+                            className="w-full rounded bg-neutral-600 py-2 font-semibold hover:bg-neutral-700 text-white"
+                        >
+                            Login to apply
+                        </button>
+
+                        <div className="absolute inset-0 z-10 opacity-0">
+                            <GoogleLogin
+                                onSuccess={(res) => {
+                                    const tokenStr = (res as any)?.credential ?? (res as any)?.access_token
+                                    if (tokenStr) login(tokenStr)
+                                }}
+                                onError={() => toast.error("Unable to sign in")}
+                            />
+                        </div>
+                    </div>
                 ) : isPendingStatus ? (
                     <Button className="mb-2 hover:ring-0  bg-neutral-600" disabled>
                         <Spinner color="gray" aria-label="Loading" />
