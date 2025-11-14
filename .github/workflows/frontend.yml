@@ -1,0 +1,15 @@
+name: CI on pull request
+on: 
+    pull_request:
+        branches:
+            - main
+        paths: 
+            - react-frontend
+
+jobs: 
+    Test-pipeline-execution:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Workflow ran"
+            - name: checking the repo files
+              run: ls {{github.workspace}}
