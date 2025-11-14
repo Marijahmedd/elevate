@@ -5,6 +5,8 @@ on:
             - main
         paths: 
             - react-frontend
+    workflow_dispatch:   # allows manual runs
+
 
 jobs: 
     Test-pipeline-execution:
