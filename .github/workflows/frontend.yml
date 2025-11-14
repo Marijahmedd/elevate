@@ -12,4 +12,4 @@ jobs:
         steps:
             - run: echo "Workflow ran"
             - name: checking the repo files
-              run: ls {{github.workspace}}
+              run: ls ${{github.workspace}}
