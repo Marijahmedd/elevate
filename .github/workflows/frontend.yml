@@ -12,6 +12,6 @@ jobs:
   Test-pipeline-execution:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Workflow ran"
+      - run: echo "Modified Workflow"
       - name: checking the repo files
         run: ls ${{ github.workspace }}
