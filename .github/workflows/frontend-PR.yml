@@ -1,9 +1,6 @@
 name: CI on pull request
 
 on:
-  push:
-    branches:
-      actions/workflows
   pull_request:
     branches:
       - main
