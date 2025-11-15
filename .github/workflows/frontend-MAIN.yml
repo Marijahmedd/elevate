@@ -43,11 +43,7 @@ jobs:
             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
             aws-region: us-east-1
       - name: Sync files to S3
-        uses:  aws-actions/aws-cli@v2
-        with:
-            args: s3 sync dist/ s3://elevate-s3-marij-frontend --delete
+        run: aws s3 sync dist/ s3://elevate-s3-marij-frontend --delete
       - name: Invalidate CloudFront Cache
-        uses: aws-actions/aws-cli@v2
-        with:
-            args: cloudfront create-invalidation --distribution-id E1ILDRPHP94H8H --paths "/*"
+        run: aws cloudfront create-invalidation --distribution-id E1ILDRPHP94H8H --paths "/*"
         
