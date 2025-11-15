@@ -20,6 +20,6 @@ jobs:
         with:
           node-version: '20'
       - run: cd react-frontend && npm install
+      - run: cd react-frontend && npm run lint
       - run: cd react-frontend && npm run build
-      - uses: actions/upload-artifact
   
