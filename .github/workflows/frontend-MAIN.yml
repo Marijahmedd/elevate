@@ -1,0 +1,53 @@
+name: CI/CD on merge to main for frontend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'react-frontend/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: cd react-frontend && npm install
+      - run: cd react-frontend && npm run lint
+      - run: cd react-frontend && npm run build
+      - uses: actions/upload-artifact@v4
+        with: 
+            name: build-artifact
+            path: react-frontend/dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Hosting Service
+        run: echo "Deploying to hosting service..."
+      - uses: actions/download-artifact@v4
+        with: 
+            name: build-artifact
+            path: ./
+      - name: list files
+        run: ls -la
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with: 
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: us-east-1
+      - name: Sync files to S3
+        uses:  aws-actions/aws-cli@v2
+        with:
+            args: s3 sync dist/ s3://elevate-s3-marij-frontend --delete
+      - name: Invalidate CloudFront Cache
+        uses: aws-actions/aws-cli@v2
+        with:
+            args: cloudfront create-invalidation --distribution-id E1ILDRPHP94H8H --paths "/*"
+        
