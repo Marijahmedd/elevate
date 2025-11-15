@@ -2,7 +2,15 @@ import { capitalizeFirst } from "@/lib/utility";
 import { X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
-export function AutocompleteInput({ options, value, onChange, placeholder }: any) {
+
+interface AutocompleteInputProps {
+    options: string[]
+    value: string
+    onChange: (value: string) => void
+    placeholder?: string
+}
+
+export function AutocompleteInput({ options, value, onChange, placeholder }: AutocompleteInputProps) {
     const [inputValue, setInputValue] = useState("");
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);

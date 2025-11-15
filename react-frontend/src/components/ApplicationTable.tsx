@@ -38,7 +38,7 @@ export default function ApplicationTable({ applications }: { applications: Appli
     const { jobId } = useParams<{ jobId: string }>()
     const user = useStore((s) => s.user)
 
-    const handleStatusChange = (e: any) => {
+    const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const applicationId = e.target.id
         const status = e.target.value as applicationStatusType
         if (!applicationId || !status) return
