@@ -9,9 +9,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  Test-pipeline-execution:
+  build:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Workflow ran"
-      - name: checking the repo files
-        run: ls ${{ github.workspace }}
+      - uses: actions/checkout@v3
+      - run: ls -la 
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+      - run: cd react-frontend && npm install
+      - run: cd react-frontend && npm run build
+      - uses: actions/upload-artifact
+  

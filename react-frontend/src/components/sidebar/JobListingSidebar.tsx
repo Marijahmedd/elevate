@@ -51,8 +51,8 @@ export function JobListingSidebar() {
     const onSubmit = async <T extends Record<string, string>>(data: T): Promise<void> => {
         const normalizedData = { ...data, jobtype: data.jobtype ? data.jobtype.toLowerCase() : "", location: data.location ? data.location.toLowerCase() : "" }
 
-        let searchQuery: Record<string, string> = {}
-        for (let key in normalizedData) {
+        const searchQuery: Record<string, string> = {}
+        for (const key in normalizedData) {
             if (normalizedData[key] !== null && normalizedData[key] !== undefined && normalizedData[key] !== "") {
                 searchQuery[key] = normalizedData[key]
             }

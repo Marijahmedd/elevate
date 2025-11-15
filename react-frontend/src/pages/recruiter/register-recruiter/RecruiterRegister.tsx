@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+ 
 import { useForm } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -14,13 +17,6 @@ export default function RecruiterRegister() {
     const navigate = useNavigate()
     const [isLoading, setIsLoading] = useState(false)
     const [selectedImage, setSelectedImage] = useState<any>(null)
-    if (!user)
-        return (
-            <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-                <h1>Unable to fetch profile</h1>
-            </div>
-        )
-
 
 
 
@@ -45,6 +41,13 @@ export default function RecruiterRegister() {
         }
     })
 
+    if (!user)
+        return (
+            <div className="flex min-h-screen items-center justify-center text-muted-foreground">
+                <h1>Unable to fetch profile</h1>
+            </div>
+        )
+
 
     const onSubmit = async (data: any) => {
         try {
@@ -62,8 +65,9 @@ export default function RecruiterRegister() {
             const requestData = { organizationName, key }
             await mutateAsync(requestData)
             setIsLoading(false)
-        } catch (err) {
+        } catch{
             toast.error("Cannot be a recruiter right now!")
+
             setIsLoading(false)
         }
     }

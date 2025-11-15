@@ -180,13 +180,7 @@ const JobDetail = () => {
                         </button>
 
                         <div className="absolute inset-0 z-10 opacity-0">
-                            <GoogleLogin
-                                onSuccess={(res) => {
-                                    const tokenStr = (res as any)?.credential ?? (res as any)?.access_token
-                                    if (tokenStr) login(tokenStr)
-                                }}
-                                onError={() => toast.error("Unable to sign in")}
-                            />
+                        <GoogleLogin onSuccess={(data) => login(data.credential as string)} />
                         </div>
                     </div>
                 ) : isPendingStatus ? (
