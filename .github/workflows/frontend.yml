@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - react-frontend
+      - 'react-frontend/**'
   workflow_dispatch:
 
 jobs:
