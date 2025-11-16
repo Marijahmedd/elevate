@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - run: docker build -t marijahmed/elevate-backend:${{github.sha}} . --dockerfile node-backend/Dockerfile
+      - run: docker build -t marijahmed/elevate-backend:${{github.sha}} -f node-backend/Dockerfile .
       - uses: actions/upload-artifact@v4
         with: 
             name: build-artifact
