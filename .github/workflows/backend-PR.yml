@@ -19,6 +19,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - run: cd react-frontend && npm install
-      - run: cd react-frontend && npm run lint
+      - run: cd node-backend && npm install
+      - run: cd node-backend && npm run lint
   
