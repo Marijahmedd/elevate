@@ -1,51 +1,53 @@
-name: CI/CD on merge to main for backend
+  name: CI/CD on merge to main for backend
 
-on:
-  push:
-    branches:
-      - workflow/test
-    paths:
-      - 'node-backend/**'
-  workflow_dispatch:
+  on:
+    push:
+      branches:
+        - workflow/test
+      paths:
+        - 'node-backend/**'
+    workflow_dispatch:
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      - run: docker build -t marijahmed/elevate-backend:${{github.sha}} -f node-backend/Dockerfile .
-      - uses: actions/upload-artifact@v4
-        with: 
-            name: build-artifact
-            path: react-frontend/dist
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_TOKEN }}
-      - name: Push to Docker Hub
-        run: docker push marijahmed/elevate-backend:${{github.sha}}
+  jobs:
+    build:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - name: Set up Node.js
+          uses: actions/setup-node@v3
+          with:
+            node-version: '20'
+        - run: docker build -t marijahmed/elevate-backend:${{github.sha}} -f node-backend/Dockerfile .
+        - uses: actions/upload-artifact@v4
+          with: 
+              name: build-artifact
+              path: react-frontend/dist
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v3
+          with:
+              username: ${{ secrets.DOCKER_USERNAME }}
+              password: ${{ secrets.DOCKER_TOKEN }}
+        - name: Push to Docker Hub
+          run: docker push marijahmed/elevate-backend:${{github.sha}}
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Setup SSH
-        run: |
-          ssh-keyscan -t ed25519 ${{secrets.BACKEND_EC2_IP}} >> ~/.ssh/known_hosts
-          echo ${{secrets.BACKEND_EC2_SSH_KEY}} > backend_key
-      - name: Edit YAML and Restart Docker
-        run: |
-          ssh -i backend_key ubuntu@${{secrets.BACKEND_EC2_IP}} << EOF
-          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
-          yq -i '.services.backend.image = \"marijahmed/elevate-backend:${{github.sha}}\"' /backend-elevate/docker-compose.yml
-          cd backend-elevate && sudo docker-compose restart
-          EOF
+    deploy:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+        - name: Setup SSH
+          run: |
+            cat << 'EOF' > backend_key
+            ${{secrets.BACKEND_EC2_SSH_KEY}}
+            EOF
+            chmod 600 backend_key
+        - name: Edit YAML and Restart Docker
+          run: |
+            ssh -i backend_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{secrets.BACKEND_EC2_IP}} << EOF
+            wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+            yq -i '.services.backend.image = \"marijahmed/elevate-backend:${{github.sha}}\"' /backend-elevate/docker-compose.yml
+            cd backend-elevate && sudo docker-compose restart
+            EOF
 
 
 
-        
+          
