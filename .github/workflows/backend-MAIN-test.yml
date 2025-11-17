@@ -46,8 +46,8 @@
             sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
             sudo chmod +x /usr/local/bin/yq
 
-            sudo yq -i '.services.backend.image = \"marijahmed/elevate-backend:${{github.sha}}\"' /backend-elevate/docker-compose.yml
-            cd backend-elevate && sudo docker compose restart
+            sudo yq -i '.services.backend.image = \"marijahmed/elevate-backend:${{github.sha}}\"' ~/backend-elevate/docker-compose.yml
+            cd ~/backend-elevate && sudo docker compose restart
             EOF
 
 
