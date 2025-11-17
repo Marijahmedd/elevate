@@ -30,26 +30,22 @@ jobs:
       - name: Push to Docker Hub
         run: docker push marijahmed/elevate-backend:${{github.sha}}
 
-#   deploy:
-#     needs: build
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Deploy to Hosting Service
-#         run: echo "Deploying to hosting service..."
-#       - uses: actions/download-artifact@v4
-#         with: 
-#             name: build-artifact
-#             path: ./dist
-#       - name: list files
-#         run: ls -la
-#       - name: configure aws credentials
-#         uses: aws-actions/configure-aws-credentials@v3
-#         with: 
-#             aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#             aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#             aws-region: us-east-1
-#       - name: Sync files to S3
-#         run: aws s3 sync dist/ s3://elevate-s3-marij-frontend --delete
-#       - name: Invalidate CloudFront Cache
-#         run: aws cloudfront create-invalidation --distribution-id E1ILDRPHP94H8H --paths "/*"
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        run: |
+          ssh-keyscan -t ed25519 ${{secrets.BACKEND_EC2_IP}} >> ~/.ssh/known_hosts
+          echo ${{secrets.BACKEND_EC2_SSH_KEY}} > backend_key
+      - name: Edit YAML and Restart Docker
+        run: |
+          ssh -i backend_key ubuntu@${{secrets.BACKEND_EC2_IP}} << EOF
+          wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq && chmod +x /usr/local/bin/yq
+          yq -i '.services.backend.image = \"marijahmed/elevate-backend:${{github.sha}}\"' /backend-elevate/docker-compose.yml
+          cd backend-elevate && sudo docker-compose restart
+          EOF
+
+
+
         
