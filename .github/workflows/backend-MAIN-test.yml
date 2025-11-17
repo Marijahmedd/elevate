@@ -43,13 +43,13 @@
         - name: Edit YAML and Restart Docker
           run: |
             ssh -i backend_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@${{secrets.BACKEND_EC2_IP}} << EOF
+            set -eo pipefail
             sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
             sudo chmod +x /usr/local/bin/yq
-
-            sudo yq -i '.services.backend.image = \"marijahmed/elevate-backend:${{github.sha}}\"' ~/backend-elevate/docker-compose.yml
+            sudo yq -i '.services.backend.image = "marijahmed/elevate-backend:${{github.sha}}"' ~/backend-elevate/docker-compose.yml
             cd ~/backend-elevate && sudo docker compose restart
             EOF
-
+        
 
 
           
