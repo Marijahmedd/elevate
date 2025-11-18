@@ -171,18 +171,22 @@ const JobDetail = () => {
             </div>
             <SheetFooter className="bg-neutral-900">
                 {!token ? (
-                    <div className="mb-2 relative inline-block w-full">
-                        <button
-                            type="button"
-                            className="w-full rounded bg-neutral-600 py-2 font-semibold hover:bg-neutral-700 text-white"
-                        >
-                            Login to apply
-                        </button>
+                    <div className="mb-2 relative w-full">
+  <button
+    type="button"
+    className="w-full rounded bg-neutral-600 py-2 font-semibold hover:bg-neutral-700 text-white"
+  >
+    Login to apply
+  </button>
 
-                        <div className="absolute inset-0 z-10 opacity-0">
-                        <GoogleLogin onSuccess={(data) => login(data.credential as string)} />
-                        </div>
-                    </div>
+  <div className="absolute inset-0 z-10 opacity-0">
+    <GoogleLogin
+      onSuccess={(data) => login(data.credential as string)}
+      size='large'
+      width={'100%'}
+      />
+  </div>
+</div>
                 ) : isPendingStatus ? (
                     <Button className="mb-2 hover:ring-0  bg-neutral-600" disabled>
                         <Spinner color="gray" aria-label="Loading" />

@@ -51,7 +51,7 @@ const Footer = () => {
 
 
         {!user ?
-          <div className="mb-2"><GoogleLogin onSuccess={(data) => login(data.credential as string)} /></div> :
+          <div className="mb-2"><GoogleLogin onSuccess={(data) => login(data.credential as string)} size="large" width={"100%"}/></div> :
 
 
 
