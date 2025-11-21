@@ -24,11 +24,7 @@ Network: EC2 and RDS inside a VPC; CloudFront serves the static frontend from S3
 
 
 
-
-
 **Design Decisions**
-
-
 
 - **Google OAuth + JWT**
 
@@ -91,6 +87,8 @@ Lambda calls back the backend with an internal secret token to update job applic
 **Backend Update**
 
 - Verifies token and updates the job application record in PostgreSQL.
+
+<img width="1609" height="205" alt="image" src="https://github.com/user-attachments/assets/a7549cb9-0da9-4d7d-8bc4-aba62fef7a1b" />
 
 
 
